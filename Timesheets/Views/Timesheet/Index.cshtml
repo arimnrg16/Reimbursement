@@ -1,0 +1,21 @@
+﻿@model Timesheets.ViewModels.Timesheet.TimesheetIndexViewModel
+
+    <h2>Timesheet</h2>
+
+<div class="button-groups actions">
+    @Html.ActionLink("Add New", "Create")
+</div>
+
+<table>
+    <thead>
+        <tr>Timesheet Date</tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Timesheets)
+        {
+            <tr>
+                <td>@item.TimesheetDate</td>
+            </tr>
+        }
+    </tbody>
+</table>

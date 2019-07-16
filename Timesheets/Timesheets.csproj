@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\src\Barebone\Barebone.csproj" />
+    <ProjectReference Include="..\src\Infrastructure\Infrastructure.csproj" />
+    <ProjectReference Include="..\Timesheets.Data.Abstractions\Timesheets.Data.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>
