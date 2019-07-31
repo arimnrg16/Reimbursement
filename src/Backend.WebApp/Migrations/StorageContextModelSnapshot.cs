@@ -51,6 +51,70 @@ namespace Backend.WebApp.Migrations
                     b.ToTable("Employees");
                 });
 
+            modelBuilder.Entity("Reimburses.Data.Entities.Department", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTimeOffset>("Created");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasMaxLength(64);
+
+                    b.Property<string>("DeleteBy");
+
+                    b.Property<DateTimeOffset?>("Deleted");
+
+                    b.Property<bool>("IsDeleted");
+
+                    b.Property<DateTimeOffset?>("Modified");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasMaxLength(64);
+
+                    b.Property<string>("departmentName")
+                        .IsRequired()
+                        .HasMaxLength(25);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Departments");
+                });
+
+            modelBuilder.Entity("Reimburses.Data.Entities.Group", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTimeOffset>("Created");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasMaxLength(64);
+
+                    b.Property<string>("DeleteBy");
+
+                    b.Property<DateTimeOffset?>("Deleted");
+
+                    b.Property<bool>("IsDeleted");
+
+                    b.Property<DateTimeOffset?>("Modified");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasMaxLength(64);
+
+                    b.Property<string>("groupName")
+                        .IsRequired()
+                        .HasMaxLength(25);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Groups");
+                });
+
             modelBuilder.Entity("Reimburses.Data.Entities.QuickLeave", b =>
                 {
                     b.Property<int>("Id")
@@ -63,42 +127,77 @@ namespace Backend.WebApp.Migrations
                         .IsRequired()
                         .HasMaxLength(64);
 
-                    b.Property<DateTimeOffset>("Date")
-                        .HasMaxLength(20);
-
-                    b.Property<string>("Department")
-                        .IsRequired()
-                        .HasMaxLength(64);
-
-                    b.Property<DateTimeOffset>("FinishTime")
-                        .HasMaxLength(25);
+                    b.Property<int>("EmployeId");
 
                     b.Property<DateTimeOffset?>("Modified");
 
                     b.Property<string>("ModifiedBy")
                         .HasMaxLength(64);
 
-                    b.Property<string>("ProjectName")
+                    b.Property<DateTimeOffset>("date");
+
+                    b.Property<int>("departmentId")
+                        .HasMaxLength(64);
+
+                    b.Property<DateTime>("finishTime");
+
+                    b.Property<int>("groupId");
+
+                    b.Property<string>("projectName")
                         .IsRequired()
                         .HasMaxLength(64);
 
-                    b.Property<string>("Purpose")
+                    b.Property<string>("purpose")
                         .IsRequired()
                         .HasMaxLength(64);
 
-                    b.Property<string>("RequestTo")
+                    b.Property<string>("requestTo")
                         .IsRequired()
                         .HasMaxLength(64);
 
-                    b.Property<DateTimeOffset>("StartTime")
-                        .HasMaxLength(20);
+                    b.Property<DateTime>("startTime");
 
-                    b.Property<DateTimeOffset>("TotalOvertime")
-                        .HasMaxLength(25);
+                    b.Property<int>("totalOvertime");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("departmentId");
+
+                    b.HasIndex("groupId");
+
                     b.ToTable("QuickLeaves");
+                });
+
+            modelBuilder.Entity("Reimburses.Data.Entities.QuickLeaveApprovalHistory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTimeOffset>("ApprovalDate");
+
+                    b.Property<int>("ApprovalStatusQuickLeave");
+
+                    b.Property<DateTimeOffset>("Created");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasMaxLength(64);
+
+                    b.Property<int>("EmployeeId");
+
+                    b.Property<DateTimeOffset?>("Modified");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasMaxLength(64);
+
+                    b.Property<int?>("QuickLeaveId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("QuickLeaveId");
+
+                    b.ToTable("QuickLeaveApprovalHistory");
                 });
 
             modelBuilder.Entity("Reimburses.Data.Entities.RequestBusinesstrip", b =>
@@ -113,34 +212,64 @@ namespace Backend.WebApp.Migrations
                         .IsRequired()
                         .HasMaxLength(64);
 
-                    b.Property<DateTimeOffset>("DateBusinessTrip")
-                        .HasMaxLength(25);
+                    b.Property<int>("EmployeeId");
 
-                    b.Property<string>("From")
-                        .IsRequired()
-                        .HasMaxLength(64);
+                    b.Property<string>("ImageUrl");
 
                     b.Property<DateTimeOffset?>("Modified");
 
                     b.Property<string>("ModifiedBy")
                         .HasMaxLength(64);
 
-                    b.Property<int>("ProofAttachment")
-                        .HasMaxLength(25);
+                    b.Property<DateTimeOffset>("dateBusinessTrip");
 
-                    b.Property<string>("To")
+                    b.Property<string>("from")
                         .IsRequired()
                         .HasMaxLength(64);
 
-                    b.Property<decimal>("TotalCostNominal")
-                        .HasMaxLength(10);
+                    b.Property<string>("to")
+                        .IsRequired()
+                        .HasMaxLength(64);
 
-                    b.Property<decimal>("TotalCostReimburse")
-                        .HasMaxLength(10);
+                    b.Property<int>("totalCostNominal");
+
+                    b.Property<int>("totalCostReimburse");
 
                     b.HasKey("Id");
 
                     b.ToTable("RequestBusinesstrips");
+                });
+
+            modelBuilder.Entity("Reimburses.Data.Entities.RequestBusinesstripApprovalHistory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTimeOffset>("ApprovalDate");
+
+                    b.Property<int>("ApprovalStatusRequestBusinesstrip");
+
+                    b.Property<DateTimeOffset>("Created");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasMaxLength(64);
+
+                    b.Property<int>("EmployeeId");
+
+                    b.Property<DateTimeOffset?>("Modified");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasMaxLength(64);
+
+                    b.Property<int?>("RequestBusinesstripId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RequestBusinesstripId");
+
+                    b.ToTable("RequestBusinesstripApprovalHistory");
                 });
 
             modelBuilder.Entity("Reimburses.Data.Entities.RequestMedical", b =>
@@ -155,29 +284,60 @@ namespace Backend.WebApp.Migrations
                         .IsRequired()
                         .HasMaxLength(64);
 
-                    b.Property<DateTimeOffset>("DateRequestMedical");
+                    b.Property<int>("EmployeeId");
 
-                    b.Property<string>("MedicationType")
-                        .IsRequired()
-                        .HasMaxLength(64);
+                    b.Property<string>("ImageUrl");
 
                     b.Property<DateTimeOffset?>("Modified");
 
                     b.Property<string>("ModifiedBy")
                         .HasMaxLength(64);
 
-                    b.Property<int>("ProofAttach")
-                        .HasMaxLength(25);
+                    b.Property<DateTimeOffset>("dateRequestMedical");
 
-                    b.Property<int>("TotalCostNominal")
-                        .HasMaxLength(10);
+                    b.Property<string>("medicationType")
+                        .IsRequired()
+                        .HasMaxLength(64);
 
-                    b.Property<int>("TotalCostReimburse")
-                        .HasMaxLength(10);
+                    b.Property<int>("totalCostNominal");
+
+                    b.Property<int>("totalCostReimburse");
 
                     b.HasKey("Id");
 
                     b.ToTable("RequestMedicals");
+                });
+
+            modelBuilder.Entity("Reimburses.Data.Entities.RequestMedicalApprovalHistory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTimeOffset>("ApprovalDate");
+
+                    b.Property<int>("ApprovalStatusRequestMedical");
+
+                    b.Property<DateTimeOffset>("Created");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasMaxLength(64);
+
+                    b.Property<int>("EmployeeId");
+
+                    b.Property<DateTimeOffset?>("Modified");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasMaxLength(64);
+
+                    b.Property<int?>("RequestMedicalId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RequestMedicalId");
+
+                    b.ToTable("RequestMedicalApprovalHistory");
                 });
 
             modelBuilder.Entity("Reimburses.Data.Entities.RequestOvertime", b =>
@@ -192,58 +352,60 @@ namespace Backend.WebApp.Migrations
                         .IsRequired()
                         .HasMaxLength(64);
 
-                    b.Property<DateTimeOffset>("DateOvertime")
-                        .HasMaxLength(25);
+                    b.Property<int>("EmployeeId");
 
-                    b.Property<string>("DepartementOrGroup")
-                        .IsRequired()
-                        .HasMaxLength(64);
-
-                    b.Property<DateTimeOffset>("FinishTime")
-                        .HasMaxLength(25);
-
-                    b.Property<int>("MealReimbursement")
-                        .HasMaxLength(10);
+                    b.Property<string>("ImageUrl");
 
                     b.Property<DateTimeOffset?>("Modified");
 
                     b.Property<string>("ModifiedBy")
                         .HasMaxLength(64);
 
-                    b.Property<string>("ProjectName")
+                    b.Property<DateTimeOffset>("dateOvertime");
+
+                    b.Property<int>("departmentId");
+
+                    b.Property<DateTime>("finishTime");
+
+                    b.Property<int>("groupId");
+
+                    b.Property<int>("mealReimbursement");
+
+                    b.Property<int>("overtimeType")
+                        .HasMaxLength(64);
+
+                    b.Property<string>("projectName")
                         .IsRequired()
                         .HasMaxLength(64);
 
-                    b.Property<int>("ProofAttcahment")
-                        .HasMaxLength(25);
-
-                    b.Property<string>("RequestTo")
+                    b.Property<string>("requestTo")
                         .IsRequired()
                         .HasMaxLength(25);
 
-                    b.Property<DateTimeOffset>("StartTime")
-                        .HasMaxLength(25);
+                    b.Property<DateTime>("startTime");
 
-                    b.Property<DateTimeOffset>("TotalOvertime")
-                        .HasMaxLength(25);
+                    b.Property<int>("totalOvertime");
 
-                    b.Property<int>("TransportReimbursement")
-                        .HasMaxLength(10);
-
-                    b.Property<string>("TypeReimbursement")
-                        .IsRequired()
-                        .HasMaxLength(64);
+                    b.Property<int>("transportReimbursement");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("departmentId");
+
+                    b.HasIndex("groupId");
 
                     b.ToTable("RequestOvertimes");
                 });
 
-            modelBuilder.Entity("Timesheets.Data.Entities.Timesheet", b =>
+            modelBuilder.Entity("Reimburses.Data.Entities.RequestOvertimeApprovalHistory", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTimeOffset>("ApprovalDate");
+
+                    b.Property<int>("ApprovalStatusRequestOvertime");
 
                     b.Property<DateTimeOffset>("Created");
 
@@ -251,74 +413,74 @@ namespace Backend.WebApp.Migrations
                         .IsRequired()
                         .HasMaxLength(64);
 
-                    b.Property<DateTimeOffset>("EndTime");
+                    b.Property<int>("EmployeeId");
 
                     b.Property<DateTimeOffset?>("Modified");
 
                     b.Property<string>("ModifiedBy")
                         .HasMaxLength(64);
 
-                    b.Property<DateTimeOffset>("StartTime");
-
-                    b.Property<DateTimeOffset>("TimesheetDate");
-
-                    b.Property<string>("TimesheetStatus")
-                        .IsRequired()
-                        .HasMaxLength(25);
-
-                    b.Property<int>("TotalHour");
+                    b.Property<int?>("RequestOvertimeId");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Timesheets");
+                    b.HasIndex("RequestOvertimeId");
+
+                    b.ToTable("RequestOvertimeApprovalHistory");
                 });
 
-            modelBuilder.Entity("Timesheets.Data.Entities.TimesheetTask", b =>
+            modelBuilder.Entity("Reimburses.Data.Entities.QuickLeave", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTimeOffset>("Created");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasMaxLength(64);
-
-                    b.Property<DateTimeOffset?>("Modified");
-
-                    b.Property<string>("ModifiedBy")
-                        .HasMaxLength(64);
-
-                    b.Property<int>("OnSprint");
-
-                    b.Property<string>("ProjectName")
-                        .IsRequired()
-                        .HasMaxLength(64);
-
-                    b.Property<string>("TaskName")
-                        .IsRequired()
-                        .HasMaxLength(64);
-
-                    b.Property<string>("TaskStatus")
-                        .IsRequired()
-                        .HasMaxLength(25);
-
-                    b.Property<int>("TimesheetId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TimesheetId");
-
-                    b.ToTable("TimesheetTasks");
-                });
-
-            modelBuilder.Entity("Timesheets.Data.Entities.TimesheetTask", b =>
-                {
-                    b.HasOne("Timesheets.Data.Entities.Timesheet", "Timesheet")
-                        .WithMany("TimesheetTasks")
-                        .HasForeignKey("TimesheetId")
+                    b.HasOne("Reimburses.Data.Entities.Department", "Department")
+                        .WithMany()
+                        .HasForeignKey("departmentId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Reimburses.Data.Entities.Group", "Group")
+                        .WithMany()
+                        .HasForeignKey("groupId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Reimburses.Data.Entities.QuickLeaveApprovalHistory", b =>
+                {
+                    b.HasOne("Reimburses.Data.Entities.QuickLeave", "QuickLeave")
+                        .WithMany("ApprovalHistory")
+                        .HasForeignKey("QuickLeaveId");
+                });
+
+            modelBuilder.Entity("Reimburses.Data.Entities.RequestBusinesstripApprovalHistory", b =>
+                {
+                    b.HasOne("Reimburses.Data.Entities.RequestBusinesstrip", "RequestBusinesstrip")
+                        .WithMany("ApprovalHistory")
+                        .HasForeignKey("RequestBusinesstripId");
+                });
+
+            modelBuilder.Entity("Reimburses.Data.Entities.RequestMedicalApprovalHistory", b =>
+                {
+                    b.HasOne("Reimburses.Data.Entities.RequestMedical", "RequestMedical")
+                        .WithMany("ApprovalHistory")
+                        .HasForeignKey("RequestMedicalId");
+                });
+
+            modelBuilder.Entity("Reimburses.Data.Entities.RequestOvertime", b =>
+                {
+                    b.HasOne("Reimburses.Data.Entities.Department", "Department")
+                        .WithMany()
+                        .HasForeignKey("departmentId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Reimburses.Data.Entities.Group", "Group")
+                        .WithMany()
+                        .HasForeignKey("groupId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Reimburses.Data.Entities.RequestOvertimeApprovalHistory", b =>
+                {
+                    b.HasOne("Reimburses.Data.Entities.RequestOvertime", "RequestOvertime")
+                        .WithMany("ApprovalHistory")
+                        .HasForeignKey("RequestOvertimeId");
                 });
 #pragma warning restore 612, 618
         }

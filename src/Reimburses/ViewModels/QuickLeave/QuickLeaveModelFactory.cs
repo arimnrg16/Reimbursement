@@ -9,7 +9,6 @@ namespace Reimburses.ViewModels.QuickLeave
         public QuickLeaveModelFactory()
         {
         }
-
         internal QuickLeaveIndexViewModel LoadAll(IStorage storage, int page, int size)
         {
             var quickLeaveRepo = storage.GetRepository<IQuickLeaveRepository>();

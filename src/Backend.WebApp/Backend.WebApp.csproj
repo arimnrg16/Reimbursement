@@ -16,8 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Timesheets.Data.EntityFramework.SqlServer\Timesheets.Data.EntityFramework.SqlServer.csproj" />
-    <ProjectReference Include="..\..\Timesheets\Timesheets.csproj" />
     <ProjectReference Include="..\Barebone\Barebone.csproj" />
     <ProjectReference Include="..\Employees.Data.EntityFramework.SqlServer\Employees.Data.EntityFramework.SqlServer.csproj" />
     <ProjectReference Include="..\Employees\Employees.csproj" />

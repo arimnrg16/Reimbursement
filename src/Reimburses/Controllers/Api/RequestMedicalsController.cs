@@ -8,15 +8,19 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Barebone.Services;
 
 namespace Reimburses.Controllers.Api
 {
     //[Authorize]
     [Route("api/requestmedicals")]
-    public class RequestMedicalsController : ControllerBaseApi
+    public class RequestMedicalsController : Barebone.Controllers.ControllerBase
     {
-        public RequestMedicalsController(IStorage storage) : base(storage)
+        private readonly IImageService _imageService;
+        public RequestMedicalsController(IStorage storage, IImageService imageService) : base(storage)
         {
+            _imageService = imageService;
         }
 
         [HttpGet]
@@ -24,6 +28,7 @@ namespace Reimburses.Controllers.Api
         {
             IEnumerable<RequestMedical> data = new RequestMedicalModelFactory().LoadAll(this.Storage, page, size)?.RequestMedicals;
             int count = data.Count();
+
 
             return Ok(new
             {
@@ -35,19 +40,23 @@ namespace Reimburses.Controllers.Api
         }
 
         [HttpPost]
-        public IActionResult Post(RequestMedicalCreateViewModel model)
+        public async Task<IActionResult> Post(RequestMedicalCreateViewModel model)
         {
             if (this.ModelState.IsValid)
             {
                 RequestMedical requestMedical = model.ToEntity();
+
+                requestMedical.GetTotalReimburseTaken();
                 var repo = this.Storage.GetRepository<IRequestMedicalRepository>();
+
+                var imageUrl = await _imageService.UploadImageAsync(model.Image);
+                requestMedical.ImageUrl = imageUrl.ToString();
 
                 repo.Create(requestMedical, GetCurrentUserName());
                 this.Storage.Save();
 
                 return Ok(new { success = true });
             }
-
             return BadRequest(new { success = false });
         }
 
@@ -62,6 +71,45 @@ namespace Reimburses.Controllers.Api
 
             return Ok(new { success = true, data = requestMedical });
         }
+
+        //approve
+
+        [HttpPost("{id:int}/approveby-sm")]
+        public IActionResult ApproveByScrumMaster(int id)
+        {
+            var username = this.GetCurrentUserName();
+
+            var repo = this.Storage.GetRepository<IRequestMedicalRepository>();
+
+            RequestMedical requestMedical = repo.WithKey(id);
+            if (requestMedical == null)
+                return this.NotFound(new { success = false });
+
+            // TODO : find correct Employee ID from Username
+            requestMedical.ScrumMasterApproved(0);
+
+            return Ok(new { success = true });
+        }
+
+        [HttpPost("{id:int}/approveby-hr")]
+        public IActionResult ApproveByHumanResourceDept(int id)
+        {
+            var username = this.GetCurrentUserName();
+
+            var repo = this.Storage.GetRepository<IRequestMedicalRepository>();
+
+            RequestMedical requestMedical = repo.WithKey(id);
+
+            if (requestMedical == null)
+                return this.NotFound(new { success = false });
+
+            return Ok(new { success = true });
+        }
+
+        //endof
+
+
+
 
         [HttpPut("{id:int}")]
         public IActionResult Put(int id, RequestMedicalUpdateViewModel model)

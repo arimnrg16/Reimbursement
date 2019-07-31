@@ -1,15 +1,15 @@
 ﻿using System.Collections.Generic;
 using Reimburses.Data.Entities;
 
-namespace Reimburses.ViewModels.RequestBusinesstrip
+namespace Reimburses.ViewModels. RequestBusinesstrip
 {
-    class RequestBusinesstripIndexViewModel
+    public class  RequestBusinesstripIndexViewModel
     {
-        public RequestBusinesstripIndexViewModel(IEnumerable<Data.Entities.RequestBusinesstrip> data)
+        public  RequestBusinesstripIndexViewModel(IEnumerable<Data.Entities. RequestBusinesstrip> data)
         {
-            RequestBusinesstrips = data ?? new List<Data.Entities.RequestBusinesstrip>();
+             RequestBusinesstrips = data ?? new List<Data.Entities. RequestBusinesstrip>();
         }
 
-        public IEnumerable<Data.Entities.RequestBusinesstrip> RequestBusinesstrips { get; }
+        public IEnumerable<Data.Entities. RequestBusinesstrip>  RequestBusinesstrips { get; }
     }
 }

@@ -9,7 +9,6 @@ namespace Reimburses.ViewModels.RequestOvertime
         {
             RequestOvertimes = data ?? new List<Data.Entities.RequestOvertime>();
         }
-
         public IEnumerable<Data.Entities.RequestOvertime> RequestOvertimes { get; }
     }
 }

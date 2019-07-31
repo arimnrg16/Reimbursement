@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.AspNetCore.Http;
 using Reimburses.Data.Entities;
 
 namespace Reimburses.ViewModels.RequestBusinesstrip
@@ -6,25 +7,21 @@ namespace Reimburses.ViewModels.RequestBusinesstrip
     public class RequestBusinesstripUpdateViewModel
     {
         public RequestBusinesstripUpdateViewModel() { }
-
         private readonly Data.Entities.RequestBusinesstrip _entity;
-
-        public DateTimeOffset DateBusinessTrip { get; set; }
-        public string From { get; set; }
-        public string To { get; set; }
-        public int TotalCostNominal { get; set; }
-        public int TotalCostReimburse { get; set; }
-        public int ProofAttachment { get; set; }
+        public DateTimeOffset dateBusinessTrip { get; set; }
+        public string from { get; set; }
+        public string to { get; set; }
+        public int totalCostNominal { get; set; }
+        public int totalCostReimburse { get; set; }
+        public IFormFile Image { get; set; }
 
         internal Data.Entities.RequestBusinesstrip ToEntity(Data.Entities.RequestBusinesstrip entity, string username)
         {
-            entity.DateBusinessTrip = this.DateBusinessTrip;
-            entity.From = this.From;
-            entity.To = this.To;
-            entity.TotalCostNominal = this.TotalCostNominal;
-            entity.TotalCostReimburse = this.TotalCostReimburse;
-            entity.ProofAttachment = this.ProofAttachment;
-           
+            entity.dateBusinessTrip = this.dateBusinessTrip;
+            entity.from = this.from;
+            entity.to = this.to;
+            entity.totalCostNominal = this.totalCostNominal;
+            entity.totalCostReimburse = this.totalCostReimburse;  
             entity.Modified = DateTime.Now;
             entity.ModifiedBy = username;
 

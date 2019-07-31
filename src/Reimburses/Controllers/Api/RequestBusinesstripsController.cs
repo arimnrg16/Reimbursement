@@ -8,15 +8,19 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
+using Barebone.Services;
+using System.Threading.Tasks;
 
 namespace Reimburses.Controllers.Api
 {
     //[Authorize]
     [Route("api/requestbusinesstrips")]
-    public class RequestBusinesstripsController : ControllerBaseApi
+    public class RequestBusinesstripsController : Barebone.Controllers.ControllerBase
     {
-        public RequestBusinesstripsController(IStorage storage) : base(storage)
+        private readonly IImageService _imageService;
+        public RequestBusinesstripsController(IStorage storage, IImageService imageService) : base(storage)
         {
+            _imageService = imageService;
         }
 
         [HttpGet]
@@ -35,19 +39,21 @@ namespace Reimburses.Controllers.Api
         }
 
         [HttpPost]
-        public IActionResult Post(RequestBusinesstripCreateViewModel model)
+        public async Task<IActionResult> PostAsync(RequestBusinesstripCreateViewModel model)
         {
             if (this.ModelState.IsValid)
             {
                 RequestBusinesstrip requestBusinesstrip = model.ToEntity();
                 var repo = this.Storage.GetRepository<IRequestBusinesstripRepository>();
 
+                var imageUrl = await _imageService.UploadImageAsync(model.Image);
+                requestBusinesstrip.ImageUrl = imageUrl.ToString();
+
                 repo.Create(requestBusinesstrip, GetCurrentUserName());
                 this.Storage.Save();
 
                 return Ok(new { success = true });
             }
-
             return BadRequest(new { success = false });
         }
 
@@ -62,6 +68,41 @@ namespace Reimburses.Controllers.Api
 
             return Ok(new { success = true, data = requestBusinesstrip });
         }
+
+        //approve
+
+        [HttpPost("{id:int}/approveby-sm")]
+        public IActionResult ApproveByScrumMaster(int id)
+        {
+            var username = this.GetCurrentUserName();
+            var repo = this.Storage.GetRepository<IRequestBusinesstripRepository>();
+
+            RequestBusinesstrip requestBusinesstrip = repo.WithKey(id);
+            if (requestBusinesstrip == null)
+                return this.NotFound(new { success = false });
+
+            // TODO : find correct Employee ID from Username
+            requestBusinesstrip.ScrumMasterApproved(0);
+
+            return Ok(new { success = true });
+        }
+
+        [HttpPost("{id:int}/approveby-hr")]
+        public IActionResult ApproveByHumanResourceDept(int id)
+        {
+            var username = this.GetCurrentUserName();
+
+            var repo = this.Storage.GetRepository<IRequestBusinesstripRepository>();
+
+            RequestBusinesstrip requestBusinesstrip = repo.WithKey(id);
+
+            if (requestBusinesstrip == null)
+                return this.NotFound(new { success = false });
+
+            return Ok(new { success = true });
+        }
+
+        //endof
 
         [HttpPut("{id:int}")]
         public IActionResult Put(int id, RequestBusinesstripUpdateViewModel model)
@@ -80,7 +121,6 @@ namespace Reimburses.Controllers.Api
 
                 return Ok(new { success = true });
             }
-
             return BadRequest(new { success = false });
         }
 

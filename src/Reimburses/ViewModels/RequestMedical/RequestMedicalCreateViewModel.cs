@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.ComponentModel.DataAnnotations;
 using Reimburses.Data.Entities;
 
@@ -6,25 +7,25 @@ namespace Reimburses.ViewModels.RequestMedical
 {
     public class RequestMedicalCreateViewModel
     {
-        //public DateTimeOffset DateRequestMedical { get; set; }
+        public DateTimeOffset dateRequestMedical { get; set; }
         [Display(Name = "Medication Type")]
         [Required()]
-        public string MedicationType { get; set; }
+        public string medicationType { get; set; }
         [Display(Name = "Total Cost")]
         [Required()]
-        public int TotalCostNominal { get; set; }
-        public int TotalCostReimburse { get; set; }
-        public int ProofAttach { get; set; }
+        public int totalCostNominal { get; set; }
+        public int totalCostReimburse { get; set; }
+        public IFormFile Image { get; set; }
 
         internal Data.Entities.RequestMedical ToEntity()
         {
             return new Data.Entities.RequestMedical
             {
-               // DateRequestMedical = this.DateRequestMedical,
-                MedicationType = this.MedicationType,
-                TotalCostNominal = this.TotalCostNominal,
-                TotalCostReimburse = this.TotalCostReimburse,
-                ProofAttach = this.ProofAttach
+                dateRequestMedical = this.dateRequestMedical,
+                medicationType = this.medicationType,
+                totalCostNominal = this.totalCostNominal,
+                totalCostReimburse = this.totalCostReimburse,
+                //Image = this.Image,
             };
         }
     }

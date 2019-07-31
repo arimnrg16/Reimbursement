@@ -17,6 +17,7 @@ namespace Reimburses.Controllers.Api
     {
         public QuickLeavesController(IStorage storage) : base(storage)
         {
+            //constructor
         }
 
         [HttpGet]
@@ -40,11 +41,11 @@ namespace Reimburses.Controllers.Api
             if (this.ModelState.IsValid)
             {
                 QuickLeave quickLeave = model.ToEntity();
+                quickLeave.GetTotalTimeTaken();
                 var repo = this.Storage.GetRepository<IQuickLeaveRepository>();
 
                 repo.Create(quickLeave, GetCurrentUserName());
                 this.Storage.Save();
-
                 return Ok(new { success = true });
             }
 
@@ -58,16 +59,43 @@ namespace Reimburses.Controllers.Api
 
             QuickLeave quickLeave = repo.WithKey(id);
 
-            //if (quickLeave == null)
-            //{
-            //    return NotFound("The Employee record couldn't be found.");
-            //}
-
             if (quickLeave == null)
                 return this.NotFound(new { success = false });
 
             return Ok(new { success = true, data = quickLeave });
         }
+
+        //approve
+
+        [HttpPost("{id:int}/approveby-sm")]
+        public IActionResult ApproveByScrumMaster(int id)
+        {
+            var username = this.GetCurrentUserName();
+
+            var repo = this.Storage.GetRepository<IQuickLeaveRepository>();
+
+            QuickLeave quickLeave = repo.WithKey(id);
+            if (quickLeave == null)
+                return this.NotFound(new { success = false });
+
+            return Ok(new { success = true });
+        }
+
+        [HttpPost("{id:int}/approveby-hr")]
+        public IActionResult ApproveByHumanResourceDept(int id)
+        {
+            var username = this.GetCurrentUserName();
+
+            var repo = this.Storage.GetRepository<IQuickLeaveRepository>();
+            QuickLeave quickLeave = repo.WithKey(id);
+
+            if (quickLeave == null)
+                return this.NotFound(new { success = false });
+
+            return Ok(new { success = true });
+        }
+
+        //endof
 
         [HttpPut("{id:int}")]
         public IActionResult Put(int id, QuickLeaveUpdateViewModel model)
@@ -78,12 +106,6 @@ namespace Reimburses.Controllers.Api
             if (quickLeave == null)
                 return this.NotFound(new { success = false });
 
-
-            //if (quickLeave == null)
-            //{
-            //    return NotFound("The Employee record couldn't be found.");
-            //}
-
             if (this.ModelState.IsValid)
             {
                 model.ToEntity(quickLeave, this.GetCurrentUserName());
@@ -92,7 +114,6 @@ namespace Reimburses.Controllers.Api
 
                 return Ok(new { success = true });
             }
-
             return BadRequest(new { success = false });
         }
 
@@ -107,8 +128,28 @@ namespace Reimburses.Controllers.Api
 
             repo.Delete(quickLeave, GetCurrentUserName());
             this.Storage.Save();
-
             return Ok(new { success = true });
         }
+
+        [HttpGet("dto-quickLeave{id:int}")]
+        public IActionResult GetQuickleaveById([FromRoute] int id)
+        {
+
+            var quickLeaveRepository = this.Storage.GetRepository<IQuickLeaveRepository>();
+            var quickLeave = quickLeaveRepository.WithKey(id);
+
+            var groupRepository = this.Storage.GetRepository<IGroupRepository>();
+            var group = groupRepository.WithKey(quickLeave.groupId);
+
+            var departmentRepository = this.Storage.GetRepository<IDepartmentRepository>();
+            var department = departmentRepository.WithKey(quickLeave.departmentId);
+
+            var result = new QuickLeaveDto(quickLeave)
+            {
+                Department = new DepartmentDto(department),
+                Group = new GroupDto(group)
+            };
+            return Ok(result);
+        }                       
     }
 }

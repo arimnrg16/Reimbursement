@@ -2,19 +2,19 @@
 using Reimburses.Data.Abstractions;
 using ExtCore.Data.Abstractions;
 
-namespace Reimburses.ViewModels.RequestMedical
+namespace Reimburses.ViewModels. RequestMedical
 {
-    class RequestMedicalModelFactory
+    class  RequestMedicalModelFactory
     {
-        public RequestMedicalModelFactory()
+        public  RequestMedicalModelFactory()
         {
         }
 
-        internal RequestMedicalIndexViewModel LoadAll(IStorage storage, int page, int size)
+        internal  RequestMedicalIndexViewModel LoadAll(IStorage storage, int page, int size)
         {
-            var requestMedicalRepo = storage.GetRepository<IRequestMedicalRepository>();
+            var  requestMedicalRepo = storage.GetRepository<IRequestMedicalRepository>();
 
-            return new RequestMedicalIndexViewModel(requestMedicalRepo.All(page, size));
+            return new  RequestMedicalIndexViewModel( requestMedicalRepo.All(page, size));
         }
     }
 }

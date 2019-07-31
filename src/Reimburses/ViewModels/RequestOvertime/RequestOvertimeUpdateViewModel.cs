@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.AspNetCore.Http;
 using Reimburses.Data.Entities;
 
 namespace Reimburses.ViewModels.RequestOvertime
@@ -9,31 +10,32 @@ namespace Reimburses.ViewModels.RequestOvertime
 
         private readonly Data.Entities.RequestOvertime _entity;
 
-        public string TypeReimbursement { get; set; }
-        public DateTimeOffset DateOvertime { get; set; }
-        public DateTimeOffset StartTime { get; set; }
-        public DateTimeOffset FinishTime { get; set; }
-        public DateTimeOffset TotalOvertime { get; set; }
-        public string DepartementOrGroup { get; set; }
-        public string ProjectName { get; set; }
-        public string RequestTo { get; set; }
-        public int TransportReimbursement { get; set; }
-        public int   MealReimbursement { get; set; }
-        public int ProofAttcahment { get; set; }
+        public OvertimeType overtimeType { get; set; }
+        public DateTimeOffset dateOvertime { get; set; }
+        public DateTime startTime { get; set; }
+        public DateTime finishTime { get; set; }
+        public int totalOvertime { get; set; }
+        public int departmentId { get; set; }
+        public int groupId { get; set; }
+        public string projectName { get; set; }
+        public string requestTo { get; set; }
+        public int transportReimbursement { get; set; }
+        public int mealReimbursement { get; set; }
+        public IFormFile Image { get; set; }
 
         internal Data.Entities.RequestOvertime ToEntity(Data.Entities.RequestOvertime entity, string username)
         {
         
-            entity.TypeReimbursement = this.TypeReimbursement;
-            entity.StartTime = this.StartTime;
-            entity.FinishTime = this.FinishTime;
-            entity.TotalOvertime = this.TotalOvertime;
-            entity.DepartementOrGroup = this.DepartementOrGroup;
-            entity.ProjectName = this.ProjectName;
-            entity.RequestTo = this.RequestTo;
-            entity.TransportReimbursement = this.TransportReimbursement;
-            entity.MealReimbursement = this.MealReimbursement;
-            entity.ProofAttcahment = this.ProofAttcahment;
+            entity.overtimeType = this.overtimeType;
+            entity.startTime = this.startTime;
+            entity.finishTime = this.finishTime;
+            entity.totalOvertime = this.totalOvertime;
+            entity.departmentId = this.departmentId;
+            entity.groupId = this.groupId;
+            entity.projectName = this.projectName;
+            entity.requestTo = this.requestTo;
+            entity.transportReimbursement = this.transportReimbursement;
+            entity.mealReimbursement = this.mealReimbursement;
 
             entity.Modified = DateTime.Now;
             entity.ModifiedBy = username;

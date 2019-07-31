@@ -8,15 +8,20 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Barebone.Services;
+using System;
 
 namespace Reimburses.Controllers.Api
 {
     //[Authorize]
     [Route("api/requestovertimes")]
-    public class RequestOvertimesController : ControllerBaseApi
+    public class RequestOvertimesController : Barebone.Controllers.ControllerBase
     {
-        public RequestOvertimesController(IStorage storage) : base(storage)
+        private readonly IImageService _imageService;
+        public RequestOvertimesController(IStorage storage, IImageService imageService) : base(storage)
         {
+            _imageService = imageService;
         }
 
         [HttpGet]
@@ -35,12 +40,15 @@ namespace Reimburses.Controllers.Api
         }
 
         [HttpPost]
-        public IActionResult Post(RequestOvertimeCreateViewModel model)
+        public async Task<IActionResult> PostAsync(RequestOvertimeCreateViewModel model)
         {
             if (this.ModelState.IsValid)
             {
                 RequestOvertime requestOvertime = model.ToEntity();
                 var repo = this.Storage.GetRepository<IRequestOvertimeRepository>();
+
+                var imageUrl = await _imageService.UploadImageAsync(model.Image);
+                requestOvertime.ImageUrl = imageUrl.ToString();
 
                 repo.Create(requestOvertime, GetCurrentUserName());
                 this.Storage.Save();
@@ -62,6 +70,44 @@ namespace Reimburses.Controllers.Api
 
             return Ok(new { success = true, data = requestOvertime });
         }
+
+        //approve
+
+        [HttpPost("{id:int}/approveby-sm")]
+        public IActionResult ApproveByScrumMaster(int id)
+        {
+            var username = this.GetCurrentUserName();
+
+            var repo = this.Storage.GetRepository<IRequestOvertimeRepository>();
+
+            RequestOvertime requestOvertime = repo.WithKey(id);
+            if (requestOvertime == null)
+                return this.NotFound(new { success = false });
+
+            // TODO : find correct Employee ID from Username
+            // quickLeave.ScrumMasterApproved(0);
+
+            return Ok(new { success = true });
+        }
+
+        [HttpPost("{id:int}/approveby-hr")]
+        public IActionResult ApproveByHumanResourceDept(int id)
+        {
+            var username = this.GetCurrentUserName();
+
+            var repo = this.Storage.GetRepository<IRequestOvertimeRepository>();
+
+            RequestOvertime requestOvertime = repo.WithKey(id);
+
+            if (requestOvertime == null)
+                return this.NotFound(new { success = false });
+
+            return Ok(new { success = true });
+        }
+
+        //endof
+
+
 
         [HttpPut("{id:int}")]
         public IActionResult Put(int id, RequestOvertimeUpdateViewModel model)
@@ -98,5 +144,41 @@ namespace Reimburses.Controllers.Api
 
             return Ok(new { success = true });
         }
+
+
+        [HttpGet("dto-requestOvertime{id:int}")]
+        public IActionResult GetRequestOvertimeById([FromRoute] int id)
+        {
+
+            var requestOvertimeRepository = this.Storage.GetRepository<IRequestOvertimeRepository>();
+            var requestOvertime = requestOvertimeRepository.WithKey(id);
+
+
+            var groupRepository = this.Storage.GetRepository<IGroupRepository>();
+            var group = groupRepository.WithKey(requestOvertime.groupId);
+
+            var departmentRepository = this.Storage.GetRepository<IDepartmentRepository>();
+            var department = departmentRepository.WithKey(requestOvertime.departmentId);
+
+
+            var result = new RequestOvertimeDto(requestOvertime)
+            {
+                Group = new GroupDto(group),
+                Department = new DepartmentDto(department)
+
+            };
+            return Ok(result);
+        }
+
+
+        [HttpGet("masterdata")]
+        public IActionResult MasterData()
+        {
+            return Ok(new
+            {
+                OvertimeTypes = Enum.GetValues(typeof(OvertimeType)).Cast<OvertimeType>().Select(o => new { id = o, name = o.ToString() })
+            });
+        }
+
     }
 }

@@ -9,26 +9,28 @@ namespace Reimburses.ViewModels.QuickLeave
 
         private readonly Data.Entities.QuickLeave _entity;
 
-      
-        public DateTime Date { get; set; }
-        public DateTime StartTime { get; set; }
-        public DateTime FinishTime { get; set; }
-        public DateTime TotalOvertime { get; set; }
-        public string Purpose { get; set; }
-        public string Department { get; set; }
-        public string ProjectName { get; set; }
-        public string RequestTo { get; set; }
+
+        public DateTimeOffset date { get; set; }
+        public DateTime startTime { get; set; }
+        public DateTime finishTime { get; set; }
+        public int totalOvertime { get; set; }
+        public string purpose { get; set; }
+        public int departmentId { get; set; }
+        public int groupId { get; set; }
+        public string projectName { get; set; }
+        public string requestTo { get; set; }
 
         internal Data.Entities.QuickLeave ToEntity(Data.Entities.QuickLeave entity, string username)
         {
-            entity.Date = this.Date;
-            entity.StartTime = this.StartTime;
-            entity.FinishTime = this.FinishTime;
-            entity.TotalOvertime = this.TotalOvertime;
-            entity.Purpose = this.Purpose;
-            entity.Department = this.Department;
-            entity.ProjectName = this.ProjectName;
-            entity.RequestTo = this.RequestTo;
+            entity.date = this.date;
+            entity.startTime = this.startTime;
+            entity.finishTime = this.finishTime;
+            entity.totalOvertime = this.totalOvertime;
+            entity.purpose = this.purpose;
+            entity.departmentId = this.departmentId;
+            entity.groupId = this.groupId;
+            entity.projectName = this.projectName;
+            entity.requestTo = this.requestTo;
             entity.Modified = DateTime.Now;
             entity.ModifiedBy = username;
 
