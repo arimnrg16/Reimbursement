@@ -16,6 +16,7 @@ namespace Reimburses.ViewModels.QuickLeave
         public string requestTo { get; set; }
         public int departmentId { get; set; }
         public int groupId { get; set; }
+        public string note { get; set; }
         internal Data.Entities.QuickLeave ToEntity()
         {
             return new Data.Entities.QuickLeave
@@ -28,7 +29,8 @@ namespace Reimburses.ViewModels.QuickLeave
                 projectName = this.projectName,
                 requestTo = this.requestTo,
                 departmentId = this.departmentId,
-                groupId = this.groupId
+                groupId = this.groupId,
+                note = this.note
             };
         }
     }

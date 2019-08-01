@@ -64,6 +64,7 @@ namespace Reimburses.Data.EntityFramework.SqlServer
                 etb.Property(p => p.departmentId).HasMaxLength(64).IsRequired();
                 etb.Property(p => p.projectName).HasMaxLength(64).IsRequired();
                 etb.Property(p => p.requestTo).HasMaxLength(64).IsRequired();
+                etb.Property(p => p.note).HasMaxLength(64).IsRequired();
 
                 etb.Property(e => e.Id).ValueGeneratedOnAdd();
             });

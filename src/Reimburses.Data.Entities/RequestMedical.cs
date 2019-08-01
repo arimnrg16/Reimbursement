@@ -12,6 +12,7 @@ namespace Reimburses.Data.Entities
         public int totalCostReimburse { get; set; }
         public string ImageUrl { get; set; }
         public int EmployeeId { get; set; }
+        
         //public IFormFile Image { get; set; }
 
 

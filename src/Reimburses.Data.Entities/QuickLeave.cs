@@ -16,6 +16,7 @@ namespace Reimburses.Data.Entities
         public string requestTo { get; set; }
         public int departmentId { get; set; }
         public int groupId { get; set; }
+        public string note { get; set; }
         public Department Department { get; set; }
         public Group Group { get; set; }
         public int EmployeId { get; set; }

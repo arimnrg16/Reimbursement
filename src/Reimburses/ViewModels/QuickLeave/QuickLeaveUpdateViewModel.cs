@@ -19,6 +19,7 @@ namespace Reimburses.ViewModels.QuickLeave
         public int groupId { get; set; }
         public string projectName { get; set; }
         public string requestTo { get; set; }
+        public string note { get; set; }
 
         internal Data.Entities.QuickLeave ToEntity(Data.Entities.QuickLeave entity, string username)
         {
@@ -29,6 +30,7 @@ namespace Reimburses.ViewModels.QuickLeave
             entity.purpose = this.purpose;
             entity.departmentId = this.departmentId;
             entity.groupId = this.groupId;
+            entity.note = this.note;
             entity.projectName = this.projectName;
             entity.requestTo = this.requestTo;
             entity.Modified = DateTime.Now;
