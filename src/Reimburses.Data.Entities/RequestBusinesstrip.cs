@@ -2,6 +2,7 @@
 using Employees.Data.Entities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Reimburses.Data.Entities
 {
@@ -15,6 +16,19 @@ namespace Reimburses.Data.Entities
         public string ImageUrl { get; set; }
         public int EmployeeId { get; set; }
         //public IFormFile Image { get; set; }
+
+
+        //di Acc
+        public bool HasFeedbackByHumanResource()
+        {
+            return this.ApprovalHistory.Any(o => o.ApprovalStatusRequestBusinesstrip == ApprovalStatusRequestBusinesstrip.ApprovedBySM || o.ApprovalStatusRequestBusinesstrip == ApprovalStatusRequestBusinesstrip.RejectedBySM);
+        }
+
+        public bool HasFeedbackByScrumMaster()
+        {
+            return this.ApprovalHistory.Any(o => o.ApprovalStatusRequestBusinesstrip == ApprovalStatusRequestBusinesstrip.ApprovedBySM || o.ApprovalStatusRequestBusinesstrip == ApprovalStatusRequestBusinesstrip.RejectedBySM);
+        }
+
 
         //approval
         public virtual ICollection<RequestBusinesstripApprovalHistory> ApprovalHistory { get; set; }

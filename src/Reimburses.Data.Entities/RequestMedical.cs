@@ -1,6 +1,7 @@
 ﻿using Data.Entities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Reimburses.Data.Entities
 {
@@ -21,6 +22,18 @@ namespace Reimburses.Data.Entities
         {
             totalCostReimburse = 8%100 * totalCostNominal;
         }
+
+        //di Acc
+        public bool HasFeedbackByHumanResource()
+        {
+            return this.ApprovalHistory.Any(o => o.ApprovalStatusRequestMedical == ApprovalStatusRequestMedical.ApprovedBySM || o.ApprovalStatusRequestMedical == ApprovalStatusRequestMedical.RejectedBySM);
+        }
+
+        public bool HasFeedbackByScrumMaster()
+        {
+            return this.ApprovalHistory.Any(o => o.ApprovalStatusRequestMedical == ApprovalStatusRequestMedical.ApprovedBySM || o.ApprovalStatusRequestMedical == ApprovalStatusRequestMedical.RejectedBySM);
+        }
+
 
         //approval
         public virtual ICollection<RequestMedicalApprovalHistory> ApprovalHistory { get; set; }

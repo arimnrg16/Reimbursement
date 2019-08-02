@@ -2,6 +2,7 @@
 using Employees.Data.Entities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Reimburses.Data.Entities
 {
@@ -25,8 +26,19 @@ namespace Reimburses.Data.Entities
         //public IFormFile Image { get; set; }
 
 
+        //di Acc
+        public bool HasFeedbackByHumanResource()
+        {
+            return this.ApprovalHistory.Any(o => o.ApprovalStatusRequestOvertime == ApprovalStatusRequestOvertime.ApprovedBySM || o.ApprovalStatusRequestOvertime == ApprovalStatusRequestOvertime.RejectedBySM);
+        }
 
-        
+        public bool HasFeedbackByScrumMaster()
+        {
+            return this.ApprovalHistory.Any(o => o.ApprovalStatusRequestOvertime == ApprovalStatusRequestOvertime.ApprovedBySM || o.ApprovalStatusRequestOvertime == ApprovalStatusRequestOvertime.RejectedBySM);
+        }
+
+
+
         //approval
 
         public virtual ICollection<RequestOvertimeApprovalHistory> ApprovalHistory { get; set; }
@@ -105,7 +117,7 @@ namespace Reimburses.Data.Entities
     public enum OvertimeType
     {
         Reimburse =1,
-        Paid_Quickleave
+        Paid_Overtime
     }
 
 }

@@ -84,13 +84,23 @@ namespace Reimburses.Controllers.Api
             if (requestOvertime == null)
                 return this.NotFound(new { success = false });
 
-            // TODO : find correct Employee ID from Username
-            requestOvertime.ScrumMasterApproved(10, GetCurrentUserName());
+            if (requestOvertime.HasFeedbackByScrumMaster() || requestOvertime.HasFeedbackByHumanResource())
+                this.ModelState.AddModelError("id", "Already have feedback by Scrum Master or HR");
 
-            this.Storage.Save();
+            if (this.ModelState.IsValid)
+            {
 
-            return Ok(new { success = true });
+                // TODO : find correct Employee ID from Username
+                requestOvertime.ScrumMasterApproved(10, GetCurrentUserName());
+
+                this.Storage.Save();
+
+                return Ok(new { success = true });
+            }
+            else
+                return BadRequest();
         }
+
 
         [HttpPost("{id:int}/approveby-hr")]
         public IActionResult ApproveByHumanResourceDept(int id)
@@ -103,12 +113,19 @@ namespace Reimburses.Controllers.Api
 
             if (requestOvertime == null)
                 return this.NotFound(new { success = false });
-            requestOvertime.HumanResourceDeptApproved(20, GetCurrentUserName());
-            this.Storage.Save();
+            if (requestOvertime.HasFeedbackByScrumMaster() || requestOvertime.HasFeedbackByHumanResource())
+                this.ModelState.AddModelError("id", "Already have feedback by Scrum Master or HR");
 
-            return Ok(new { success = true });
+            if (ModelState.IsValid)
+            {
+                requestOvertime.HumanResourceDeptApproved(20, GetCurrentUserName());
+                this.Storage.Save();
+
+                return Ok(new { success = true });
+            }
+            return BadRequest();
+
         }
-
         //endof
 
 
@@ -123,10 +140,18 @@ namespace Reimburses.Controllers.Api
             if (requestOvertime == null)
                 return this.NotFound(new { success = false });
 
-            requestOvertime.ScrumMasterRejected(10, GetCurrentUserName());
-            this.Storage.Save();
-            return Ok(new { success = true });
+            if (requestOvertime.HasFeedbackByScrumMaster() || requestOvertime.HasFeedbackByHumanResource())
+                this.ModelState.AddModelError("id", "Already have feedback by Scrum Master or HR");
+
+            if (ModelState.IsValid)
+            {
+                requestOvertime.ScrumMasterRejected(10, GetCurrentUserName());
+                this.Storage.Save();
+                return Ok(new { success = true });
+            }
+            return BadRequest();
         }
+
 
         [HttpPost("{id:int}/rejectedby-hr")]
         public IActionResult RejectByHumanResourceDept([FromRoute]int id)
@@ -136,12 +161,20 @@ namespace Reimburses.Controllers.Api
             RequestOvertime requestOvertime = repo.WithKey(id);
             if (requestOvertime == null)
                 return this.NotFound(new { success = false });
-            requestOvertime.HumanResourceDeptRejected(20, GetCurrentUserName());
+            if (requestOvertime.HasFeedbackByScrumMaster() || requestOvertime.HasFeedbackByHumanResource())
 
-            this.Storage.Save();
-            return Ok(new { success = true });
+                this.ModelState.AddModelError("id", "Already have feedback by Srum Master or HR");
+
+            if (ModelState.IsValid)
+            {
+                requestOvertime.HumanResourceDeptRejected(20, GetCurrentUserName());
+
+                this.Storage.Save();
+                return Ok(new { success = true });
+            }
+            return BadRequest();
         }
-
+        //end
         //end 
 
 

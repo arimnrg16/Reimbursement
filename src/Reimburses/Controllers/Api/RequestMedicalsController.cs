@@ -85,12 +85,21 @@ namespace Reimburses.Controllers.Api
             if (requestMedical == null)
                 return this.NotFound(new { success = false });
 
-            // TODO : find correct Employee ID from Username
-            requestMedical.ScrumMasterApproved(10, GetCurrentUserName());
+            if (requestMedical.HasFeedbackByScrumMaster() || requestMedical.HasFeedbackByHumanResource())
+                this.ModelState.AddModelError("id", "Already have feedback by Scrum Master or HR");
 
-            this.Storage.Save();
+            if (this.ModelState.IsValid)
+            {
 
-            return Ok(new { success = true });
+                // TODO : find correct Employee ID from Username
+                requestMedical.ScrumMasterApproved(10, GetCurrentUserName());
+
+                this.Storage.Save();
+
+                return Ok(new { success = true });
+            }
+            else
+                return BadRequest();
         }
 
         [HttpPost("{id:int}/approveby-hr")]
@@ -105,12 +114,19 @@ namespace Reimburses.Controllers.Api
             if (requestMedical == null)
                 return this.NotFound(new { success = false });
 
-            requestMedical.HumanResourceDeptApproved(20, GetCurrentUserName());
-            this.Storage.Save();
+            if (requestMedical.HasFeedbackByScrumMaster() || requestMedical.HasFeedbackByHumanResource())
+                this.ModelState.AddModelError("id", "Already have feedback by Scrum Master or HR");
 
-            return Ok(new { success = true });
+            if (ModelState.IsValid)
+            {
+                requestMedical.HumanResourceDeptApproved(20, GetCurrentUserName());
+                this.Storage.Save();
+
+                return Ok(new { success = true });
+            }
+            return BadRequest();
+
         }
-
         //endof
 
 
@@ -127,9 +143,16 @@ namespace Reimburses.Controllers.Api
             if (requestMedical == null)
                 return this.NotFound(new { success = false });
 
-            requestMedical.ScrumMasterRejected(10, GetCurrentUserName());
-            this.Storage.Save();
-            return Ok(new { success = true });
+            if (requestMedical.HasFeedbackByScrumMaster() || requestMedical.HasFeedbackByHumanResource())
+                this.ModelState.AddModelError("id", "Already have feedback by Scrum Master or HR");
+
+            if (ModelState.IsValid)
+            {
+                requestMedical.ScrumMasterRejected(10, GetCurrentUserName());
+                this.Storage.Save();
+                return Ok(new { success = true });
+            }
+            return BadRequest();
         }
 
         [HttpPost("{id:int}/rejectedby-hr")]
@@ -140,12 +163,20 @@ namespace Reimburses.Controllers.Api
             RequestMedical requestMedical = repo.WithKey(id);
             if (requestMedical == null)
                 return this.NotFound(new { success = false });
-            requestMedical.HumanResourceDeptRejected(20, GetCurrentUserName());
+            if (requestMedical.HasFeedbackByScrumMaster() || requestMedical.HasFeedbackByHumanResource())
 
-            this.Storage.Save();
-            return Ok(new { success = true });
+                this.ModelState.AddModelError("id", "Already have feedback by Srum Master or HR");
+
+            if (ModelState.IsValid)
+            {
+                requestMedical.HumanResourceDeptRejected(20, GetCurrentUserName());
+
+                this.Storage.Save();
+                return Ok(new { success = true });
+            }
+            return BadRequest();
         }
-
+        //end
         //end
 
 

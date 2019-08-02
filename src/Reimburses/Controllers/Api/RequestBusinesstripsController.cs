@@ -81,12 +81,21 @@ namespace Reimburses.Controllers.Api
             if (requestBusinesstrip == null)
                 return this.NotFound(new { success = false });
 
-            // TODO : find correct Employee ID from Username
-            requestBusinesstrip.ScrumMasterApproved(10, GetCurrentUserName());
+            if (requestBusinesstrip.HasFeedbackByScrumMaster() || requestBusinesstrip.HasFeedbackByHumanResource())
+                this.ModelState.AddModelError("id", "Already have feedback by Scrum Master or HR");
 
-            this.Storage.Save();
+            if (this.ModelState.IsValid)
+            {
 
-            return Ok(new { success = true });
+                // TODO : find correct Employee ID from Username
+                requestBusinesstrip.ScrumMasterApproved(10, GetCurrentUserName());
+
+                this.Storage.Save();
+
+                return Ok(new { success = true });
+            }
+            else
+                return BadRequest();
         }
 
         [HttpPost("{id:int}/approveby-hr")]
@@ -100,12 +109,19 @@ namespace Reimburses.Controllers.Api
 
             if (requestBusinesstrip == null)
                 return this.NotFound(new { success = false });
-            
-            requestBusinesstrip.HumanResourceDeptApproved(20, GetCurrentUserName());
-            this.Storage.Save();
 
+            if (requestBusinesstrip.HasFeedbackByScrumMaster() || requestBusinesstrip.HasFeedbackByHumanResource())
+                this.ModelState.AddModelError("id", "Already have feedback by Scrum Master or HR");
 
-            return Ok(new { success = true });
+            if (ModelState.IsValid)
+            {
+                requestBusinesstrip.HumanResourceDeptApproved(20, GetCurrentUserName());
+                this.Storage.Save();
+
+                return Ok(new { success = true });
+            }
+            return BadRequest();
+
         }
 
         //endof
@@ -122,10 +138,18 @@ namespace Reimburses.Controllers.Api
             if (requestBusinesstrip == null)
                 return this.NotFound(new { success = false });
 
-            requestBusinesstrip.ScrumMasterRejected(10, GetCurrentUserName());
-            this.Storage.Save();
-            return Ok(new { success = true });
+            if (requestBusinesstrip.HasFeedbackByScrumMaster() || requestBusinesstrip.HasFeedbackByHumanResource())
+                this.ModelState.AddModelError("id", "Already have feedback by Scrum Master or HR");
+
+            if (ModelState.IsValid)
+            {
+                requestBusinesstrip.ScrumMasterRejected(10, GetCurrentUserName());
+                this.Storage.Save();
+                return Ok(new { success = true });
+            }
+            return BadRequest();
         }
+
 
         [HttpPost("{id:int}/rejectedby-hr")]
         public IActionResult RejectByHumanResourceDept([FromRoute]int id)
@@ -135,12 +159,21 @@ namespace Reimburses.Controllers.Api
             RequestBusinesstrip requestBusinesstrip = repo.WithKey(id);
             if (requestBusinesstrip == null)
                 return this.NotFound(new { success = false });
-            requestBusinesstrip.HumanResourceDeptRejected(20, GetCurrentUserName());
 
-            this.Storage.Save();
-            return Ok(new { success = true });
+
+            if (requestBusinesstrip.HasFeedbackByScrumMaster() || requestBusinesstrip.HasFeedbackByHumanResource())
+
+                this.ModelState.AddModelError("id", "Already have feedback by Srum Master or HR");
+
+            if (ModelState.IsValid)
+            {
+                requestBusinesstrip.HumanResourceDeptRejected(20, GetCurrentUserName());
+
+                this.Storage.Save();
+                return Ok(new { success = true });
+            }
+            return BadRequest();
         }
-
         //end
 
 
