@@ -85,7 +85,9 @@ namespace Reimburses.Controllers.Api
                 return this.NotFound(new { success = false });
 
             // TODO : find correct Employee ID from Username
-            // quickLeave.ScrumMasterApproved(0);
+            requestOvertime.ScrumMasterApproved(10, GetCurrentUserName());
+
+            this.Storage.Save();
 
             return Ok(new { success = true });
         }
@@ -101,11 +103,48 @@ namespace Reimburses.Controllers.Api
 
             if (requestOvertime == null)
                 return this.NotFound(new { success = false });
+            requestOvertime.HumanResourceDeptApproved(20, GetCurrentUserName());
+            this.Storage.Save();
 
             return Ok(new { success = true });
         }
 
         //endof
+
+
+        //rejected
+
+        [HttpPost("{id:int}/rejectedby-sm")]
+        public IActionResult RejectedByScrumMaster([FromRoute]int id)
+        {
+            var username = this.GetCurrentUserName();
+            var repo = this.Storage.GetRepository<IRequestOvertimeRepository>();
+            RequestOvertime requestOvertime = repo.WithKey(id);
+            if (requestOvertime == null)
+                return this.NotFound(new { success = false });
+
+            requestOvertime.ScrumMasterRejected(10, GetCurrentUserName());
+            this.Storage.Save();
+            return Ok(new { success = true });
+        }
+
+        [HttpPost("{id:int}/rejectedby-hr")]
+        public IActionResult RejectByHumanResourceDept([FromRoute]int id)
+        {
+            var username = this.GetCurrentUserName();
+            var repo = this.Storage.GetRepository<IRequestOvertimeRepository>();
+            RequestOvertime requestOvertime = repo.WithKey(id);
+            if (requestOvertime == null)
+                return this.NotFound(new { success = false });
+            requestOvertime.HumanResourceDeptRejected(20, GetCurrentUserName());
+
+            this.Storage.Save();
+            return Ok(new { success = true });
+        }
+
+        //end 
+
+
 
 
 

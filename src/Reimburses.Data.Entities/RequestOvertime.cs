@@ -31,53 +31,61 @@ namespace Reimburses.Data.Entities
 
         public virtual ICollection<RequestOvertimeApprovalHistory> ApprovalHistory { get; set; }
 
-        public bool HumanResourceDeptApproved(int hrStaffEmployeeId)
+        public bool HumanResourceDeptApproved(int hrStaffEmployeeId, string currentUsername)
         {
             this.ApprovalHistory.Add(new RequestOvertimeApprovalHistory
             {
                 ApprovalDate = DateTime.Now,
                 ApprovalStatusRequestOvertime = ApprovalStatusRequestOvertime.ApprovedByHR,
                 RequestOvertime = this,
-                EmployeeId = hrStaffEmployeeId
+                EmployeeId = hrStaffEmployeeId,
+                Created = DateTime.Now,
+                CreatedBy = currentUsername
             });
 
             return true;
         }
 
-        public bool HumanResourceDeptRejected(int hrStaffEmployeeId)
+        public bool HumanResourceDeptRejected(int hrStaffEmployeeId, string currentUsername)
         {
             this.ApprovalHistory.Add(new RequestOvertimeApprovalHistory
             {
                 ApprovalDate = DateTime.Now,
                 ApprovalStatusRequestOvertime = ApprovalStatusRequestOvertime.RejectedbyHR,
                 RequestOvertime = this,
-                EmployeeId = hrStaffEmployeeId
+                EmployeeId = hrStaffEmployeeId,
+                Created = DateTime.Now,
+                CreatedBy = currentUsername
             });
 
             return true;
         }
 
-        public bool ScrumMasterApproved(int scrumMasterEmployeeId)
+        public bool ScrumMasterApproved(int scrumMasterEmployeeId, string currentUsername)
         {
             this.ApprovalHistory.Add(new RequestOvertimeApprovalHistory
             {
                 ApprovalDate = DateTime.Now,
                 ApprovalStatusRequestOvertime = ApprovalStatusRequestOvertime.ApprovedBySM,
                 RequestOvertime = this,
-                EmployeeId = scrumMasterEmployeeId
+                EmployeeId = scrumMasterEmployeeId,
+                Created = DateTime.Now,
+                CreatedBy = currentUsername
             });
 
             return true;
         }
 
-        public bool ScrumMasterRejected(int scrumMasterEmployeeId)
+        public bool ScrumMasterRejected(int scrumMasterEmployeeId, string currentUsername)
         {
             this.ApprovalHistory.Add(new RequestOvertimeApprovalHistory
             {
                 ApprovalDate = DateTime.Now,
                 ApprovalStatusRequestOvertime = ApprovalStatusRequestOvertime.RejectedBySM,
                 RequestOvertime = this,
-                EmployeeId = scrumMasterEmployeeId
+                EmployeeId = scrumMasterEmployeeId,
+                Created = DateTime.Now,
+                CreatedBy = currentUsername
             });
 
             return true;

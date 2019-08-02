@@ -78,7 +78,22 @@ namespace Reimburses.Controllers.Api
             if (quickLeave == null)
                 return this.NotFound(new { success = false });
 
-            return Ok(new { success = true });
+            // TODO : find correct Employee ID from Username
+            if (quickLeave.HasFeedbackByScrumMaster() || quickLeave.HasFeedbackByHumanResource())
+                this.ModelState.AddModelError("id", "Already have feedback by Scrum Master or HR");
+
+            if (this.ModelState.IsValid)
+            {
+
+                // TODO : find correct Employee ID from Username
+                quickLeave.ScrumMasterApproved(10, GetCurrentUserName());
+
+                this.Storage.Save();
+
+                return Ok(new { success = true });
+            }
+            else
+                return BadRequest();
         }
 
         [HttpPost("{id:int}/approveby-hr")]
@@ -92,10 +107,66 @@ namespace Reimburses.Controllers.Api
             if (quickLeave == null)
                 return this.NotFound(new { success = false });
 
-            return Ok(new { success = true });
+            if (quickLeave.HasFeedbackByScrumMaster() || quickLeave.HasFeedbackByHumanResource())
+                this.ModelState.AddModelError("id", "Already have feedback by Scrum Master or HR");
+
+            if (ModelState.IsValid)
+            {
+                quickLeave.HumanResourceDeptApproved(20, GetCurrentUserName());
+                this.Storage.Save();
+
+                return Ok(new { success = true });
+            }
+            return BadRequest();
+
+        }
+        //endof
+
+        //rejected
+
+        [HttpPost("{id:int}/rejectedby-sm")]
+        public IActionResult RejectedByScrumMaster([FromRoute]int id)
+        {
+            var username = this.GetCurrentUserName();
+            var repo = this.Storage.GetRepository<IQuickLeaveRepository>();
+            QuickLeave quickLeave = repo.WithKey(id);
+            if (quickLeave == null)
+                return this.NotFound(new { success = false });
+
+            if (quickLeave.HasFeedbackByScrumMaster() || quickLeave.HasFeedbackByHumanResource())
+                this.ModelState.AddModelError("id", "Already have feedback by Scrum Master or HR");
+
+            if (ModelState.IsValid)
+            {
+                quickLeave.ScrumMasterRejected(10, GetCurrentUserName());
+                this.Storage.Save();
+                return Ok(new { success = true });
+            }
+            return BadRequest();
         }
 
-        //endof
+        [HttpPost("{id:int}/rejectedby-hr")]
+        public IActionResult RejectByHumanResourceDept([FromRoute]int id)
+        {
+            var username = this.GetCurrentUserName();
+            var repo = this.Storage.GetRepository<IQuickLeaveRepository>();
+            QuickLeave quickLeave = repo.WithKey(id);
+            if (quickLeave == null)
+                return this.NotFound(new { success = false });
+            if (quickLeave.HasFeedbackByScrumMaster() || quickLeave.HasFeedbackByHumanResource())
+
+                this.ModelState.AddModelError("id", "Already have feedback by Srum Master or HR");
+
+            if (ModelState.IsValid)
+            {
+                quickLeave.HumanResourceDeptRejected(20, GetCurrentUserName());
+
+                this.Storage.Save();
+                return Ok(new { success = true });
+            }
+            return BadRequest();
+        }
+        //end
 
         [HttpPut("{id:int}")]
         public IActionResult Put(int id, QuickLeaveUpdateViewModel model)

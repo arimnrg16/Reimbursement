@@ -2,6 +2,7 @@
 using Employees.Data.Entities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Reimburses.Data.Entities
 {
@@ -23,73 +24,81 @@ namespace Reimburses.Data.Entities
 
         //public string Department { get; set; }        
         //public virtual Employee Employee { get; set; }
-
-        //Count Time
-        //public TimeSpan GetTotalTimeTaken(DateTime startTime, DateTime finishTime)
-        //{
-        //    TimeSpan startH = TimeSpan.FromHours(startTime.Hour);
-        //    TimeSpan finishH = TimeSpan.FromHours(finishTime.Hour);
-        //    TimeSpan totalOvertime = finishH.Subtract(startH);
-        //    return totalOvertime;
-        //}
-
         public void GetTotalTimeTaken()
         {
             totalOvertime = (finishTime - startTime).Hours;
         }
 
+        //di Acc
+        public bool HasFeedbackByHumanResource()
+        {
+            return this.ApprovalHistory.Any(o => o.ApprovalStatusQuickLeave == ApprovalStatusQuickLeave.ApprovedBySM || o.ApprovalStatusQuickLeave == ApprovalStatusQuickLeave.RejectedBySM);
+        }
+
+        public bool HasFeedbackByScrumMaster()
+        {
+            return this.ApprovalHistory.Any(o => o.ApprovalStatusQuickLeave == ApprovalStatusQuickLeave.ApprovedBySM || o.ApprovalStatusQuickLeave == ApprovalStatusQuickLeave.RejectedBySM);
+        }
+
 
         //approval
-
         public virtual ICollection<QuickLeaveApprovalHistory> ApprovalHistory { get; set; }
-
-        public bool HumanResourceDeptApproved(int hrStaffEmployeeId)
+        public bool HumanResourceDeptApproved(int hrStaffEmployeeId, string currentUsername)
         {
             this.ApprovalHistory.Add(new QuickLeaveApprovalHistory
             {
                 ApprovalDate = DateTime.Now,
                 ApprovalStatusQuickLeave = ApprovalStatusQuickLeave.ApprovedByHR,
                 QuickLeave = this,
-                EmployeeId = hrStaffEmployeeId
+                EmployeeId = hrStaffEmployeeId,
+                CreatedBy = currentUsername,
+                Created = DateTime.Now
             });
 
             return true;
         }
 
-        public bool HumanResourceDeptRejected(int hrStaffEmployeeId)
+        public bool HumanResourceDeptRejected(int hrStaffEmployeeId, string currentUsername)
         {
             this.ApprovalHistory.Add(new QuickLeaveApprovalHistory
             {
                 ApprovalDate = DateTime.Now,
                 ApprovalStatusQuickLeave = ApprovalStatusQuickLeave.RejectedbyHR,
                 QuickLeave = this,
-                EmployeeId = hrStaffEmployeeId
+                EmployeeId = hrStaffEmployeeId,
+                 CreatedBy = currentUsername,
+                Created = DateTime.Now
             });
 
             return true;
         }
 
-        public bool ScrumMasterApproved(int scrumMasterEmployeeId)
+        public bool ScrumMasterApproved(int scrumMasterEmployeeId, string currentUsername)
         {
             this.ApprovalHistory.Add(new QuickLeaveApprovalHistory
             {
-                ApprovalDate = DateTime.Now,
+                ApprovalDate = DateTime.Now, 
                 ApprovalStatusQuickLeave = ApprovalStatusQuickLeave.ApprovedBySM,
                 QuickLeave = this,
-                EmployeeId = scrumMasterEmployeeId
+                EmployeeId = scrumMasterEmployeeId,
+                Created = DateTime.Now,
+                CreatedBy = currentUsername
+               
             });
 
             return true;
         }
 
-        public bool ScrumMasterRejected(int scrumMasterEmployeeId)
+        public bool ScrumMasterRejected(int scrumMasterEmployeeId, string currentUsername)
         {
             this.ApprovalHistory.Add(new QuickLeaveApprovalHistory
             {
                 ApprovalDate = DateTime.Now,
                 ApprovalStatusQuickLeave = ApprovalStatusQuickLeave.RejectedBySM,
                 QuickLeave = this,
-                EmployeeId = scrumMasterEmployeeId
+                EmployeeId = scrumMasterEmployeeId,
+                CreatedBy = currentUsername,
+                Created = DateTime.Now
             });
 
             return true;

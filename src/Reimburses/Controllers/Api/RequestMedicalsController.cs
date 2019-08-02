@@ -86,7 +86,9 @@ namespace Reimburses.Controllers.Api
                 return this.NotFound(new { success = false });
 
             // TODO : find correct Employee ID from Username
-            requestMedical.ScrumMasterApproved(0);
+            requestMedical.ScrumMasterApproved(10, GetCurrentUserName());
+
+            this.Storage.Save();
 
             return Ok(new { success = true });
         }
@@ -103,10 +105,49 @@ namespace Reimburses.Controllers.Api
             if (requestMedical == null)
                 return this.NotFound(new { success = false });
 
+            requestMedical.HumanResourceDeptApproved(20, GetCurrentUserName());
+            this.Storage.Save();
+
             return Ok(new { success = true });
         }
 
         //endof
+
+
+
+
+        //rejected
+
+        [HttpPost("{id:int}/rejectedby-sm")]
+        public IActionResult RejectedByScrumMaster([FromRoute]int id)
+        {
+            var username = this.GetCurrentUserName();
+            var repo = this.Storage.GetRepository<IRequestMedicalRepository>();
+            RequestMedical requestMedical = repo.WithKey(id);
+            if (requestMedical == null)
+                return this.NotFound(new { success = false });
+
+            requestMedical.ScrumMasterRejected(10, GetCurrentUserName());
+            this.Storage.Save();
+            return Ok(new { success = true });
+        }
+
+        [HttpPost("{id:int}/rejectedby-hr")]
+        public IActionResult RejectByHumanResourceDept([FromRoute]int id)
+        {
+            var username = this.GetCurrentUserName();
+            var repo = this.Storage.GetRepository<IRequestMedicalRepository>();
+            RequestMedical requestMedical = repo.WithKey(id);
+            if (requestMedical == null)
+                return this.NotFound(new { success = false });
+            requestMedical.HumanResourceDeptRejected(20, GetCurrentUserName());
+
+            this.Storage.Save();
+            return Ok(new { success = true });
+        }
+
+        //end
+
 
 
 

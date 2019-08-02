@@ -82,7 +82,9 @@ namespace Reimburses.Controllers.Api
                 return this.NotFound(new { success = false });
 
             // TODO : find correct Employee ID from Username
-            requestBusinesstrip.ScrumMasterApproved(0);
+            requestBusinesstrip.ScrumMasterApproved(10, GetCurrentUserName());
+
+            this.Storage.Save();
 
             return Ok(new { success = true });
         }
@@ -98,11 +100,50 @@ namespace Reimburses.Controllers.Api
 
             if (requestBusinesstrip == null)
                 return this.NotFound(new { success = false });
+            
+            requestBusinesstrip.HumanResourceDeptApproved(20, GetCurrentUserName());
+            this.Storage.Save();
+
 
             return Ok(new { success = true });
         }
 
         //endof
+
+
+        //rejected
+
+        [HttpPost("{id:int}/rejectedby-sm")]
+        public IActionResult RejectedByScrumMaster([FromRoute]int id)
+        {
+            var username = this.GetCurrentUserName();
+            var repo = this.Storage.GetRepository<IRequestBusinesstripRepository>();
+            RequestBusinesstrip requestBusinesstrip = repo.WithKey(id);
+            if (requestBusinesstrip == null)
+                return this.NotFound(new { success = false });
+
+            requestBusinesstrip.ScrumMasterRejected(10, GetCurrentUserName());
+            this.Storage.Save();
+            return Ok(new { success = true });
+        }
+
+        [HttpPost("{id:int}/rejectedby-hr")]
+        public IActionResult RejectByHumanResourceDept([FromRoute]int id)
+        {
+            var username = this.GetCurrentUserName();
+            var repo = this.Storage.GetRepository<IRequestBusinesstripRepository>();
+            RequestBusinesstrip requestBusinesstrip = repo.WithKey(id);
+            if (requestBusinesstrip == null)
+                return this.NotFound(new { success = false });
+            requestBusinesstrip.HumanResourceDeptRejected(20, GetCurrentUserName());
+
+            this.Storage.Save();
+            return Ok(new { success = true });
+        }
+
+        //end
+
+
 
         [HttpPut("{id:int}")]
         public IActionResult Put(int id, RequestBusinesstripUpdateViewModel model)
